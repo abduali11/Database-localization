@@ -28,7 +28,7 @@ public class LanguageSelectionController {
     private Button saveButton;
 
     // Database connection parameters
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/lecture";
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/lecture?useUnicode=true&characterEncoding=utf8";
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "";
 
@@ -80,12 +80,15 @@ public class LanguageSelectionController {
     }
 
     private void insertEmployee(Connection conn, String firstName, String lastName, String email) throws SQLException {
-        String sql = "INSERT INTO employee_en (first_name, last_name, email) VALUES (?, ?, ?)";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, firstName);
-            stmt.setString(2, lastName);
-            stmt.setString(3, email);
-            stmt.executeUpdate();
+        String[] tables = {"employee_en", "employee_fa", "employee_ja"};
+        for (String table : tables) {
+            String sql = "INSERT INTO " + table + " (first_name, last_name, email) VALUES (?, ?, ?)";
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, firstName);
+                stmt.setString(2, lastName);
+                stmt.setString(3, email);
+                stmt.executeUpdate();
+            }
         }
     }
 }
